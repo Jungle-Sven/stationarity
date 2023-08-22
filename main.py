@@ -63,7 +63,7 @@ class Stationarity:
                                                    'usdVolume'])
         df = df.rename(columns={'startedAt': 'timestamp', 'usdVolume': 'volume'})
         #inversion
-        df = df[::-1]
+        df = df[::-1].reset_index(drop=True)
         #convert data types
         df['open'] = df['open'].astype(float)
         df['high'] = df['high'].astype(float)
@@ -110,9 +110,11 @@ class Stationarity:
         print("Smallest values:")
         print(sorted_sum.head(3))
 
-        print("\nLargest values:")
-        print(sorted_sum.tail(3))
-    
+        sorted_largest = sum_by_market.sort_values(ascending=False)
+
+        print("Largest values (descending order):")
+        print(sorted_largest.head(3))
+
     def run(self):
         #get markets data
         markets_info = self.get_markets_info()
@@ -141,13 +143,18 @@ class Stationarity:
             
             item['total_p'] = total_p
        
-        #print(self.all_markets_list)
         #print(self.results)
 
         df = pd.DataFrame(results, columns=['market', 'timeframe', 'p'])
         print(df)
-        self.show_min_max(df)
+        #self.show_min_max(df)
         self.show_markets(df)
+
+        #print(self.all_markets_list)
+        sorted_by_total_p = sorted(self.all_markets_list, key=lambda d: d['total_p'], reverse=False)
+        for i in sorted_by_total_p:
+            print(i)
+        
 
 if __name__ == '__main__':
     test = Stationarity()
