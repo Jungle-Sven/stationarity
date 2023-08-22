@@ -1,0 +1,1 @@
+This script recieves OHLCV data from dYdX exchange and calculates stationarity across the markets. More stationary prices are good for mean-revert strategies, less stationary - for trend following.

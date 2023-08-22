@@ -1,0 +1,2 @@
+dydx-v3-python
+statsmodels==0.14
