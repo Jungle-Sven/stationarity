@@ -1,5 +1,6 @@
 import time
 import pandas as pd
+import numpy as np
 from datetime import datetime, timedelta
 
 from api import api
@@ -70,6 +71,12 @@ class Stationarity:
         df['low'] = df['low'].astype(float)
         df['close'] = df['close'].astype(float)
         df['volume'] = df['volume'].astype(float)
+        #log prices
+        df['close'] = df['close'].apply(np.log)
+        #log price changes
+        df['difference'] = df['close'].diff()
+        #pace of change or change of changes
+        df['pace'] = df['difference'].diff()
         #print(df)
         return df
     
@@ -93,11 +100,24 @@ class Stationarity:
             df = self.results[min_rows["market"].iloc[i]][min_rows["timeframe"].iloc[i]]['df']
             plt.plot(df['close'])
             plt.show()
+            #plot difference
+            plt.plot(df['difference'])
+            plt.show()
+            #plot difference lvl2
+            plt.plot(df['pace'])
+            plt.show()
+        
         
         for i in range(0, 3):
             print(f'printing the least stationary: {max_rows["market"].iloc[i]} {max_rows["p"].iloc[i]} {max_rows["timeframe"].iloc[i]}')
             df = self.results[max_rows["market"].iloc[i]][max_rows["timeframe"].iloc[i]]['df']
             plt.plot(df['close'])
+            plt.show()
+            #plot difference
+            plt.plot(df['difference'])
+            plt.show()
+            #plot difference lvl2
+            plt.plot(df['pace'])
             plt.show()
 
     def show_markets(self, df):
@@ -147,7 +167,7 @@ class Stationarity:
 
         df = pd.DataFrame(results, columns=['market', 'timeframe', 'p'])
         print(df)
-        #self.show_min_max(df)
+        self.show_min_max(df)
         self.show_markets(df)
 
         #print(self.all_markets_list)
